@@ -1,0 +1,3 @@
+TTY Driver Syscalls:
+    terminal_clear: EAX: 0x00
+        Desc: Clears the terminal
