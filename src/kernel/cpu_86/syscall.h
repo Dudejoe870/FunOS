@@ -6,4 +6,4 @@ void init_syscalls(void);
 
 // Callbacks
 // TTY:
-void terminal_clear_syscall(interrupt_info_t* info);
+uint32_t terminal_clear_syscall(interrupt_info_t* info);

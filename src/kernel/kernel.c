@@ -10,7 +10,7 @@
 #include "shell.h"
 #include "syscall.h"
 
-extern void syscall_test(void);
+extern uint32_t syscall_test(void);
 
 void kernel_main()
 {

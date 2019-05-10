@@ -9,29 +9,30 @@
 
 ; Common ISR code
 isr_common_stub:
-    pusha
+    pusha ; Pushes edi, esi, ebp, esp, ebx, edx, ecx, eax.
     mov ax, ds
-    push eax
-    mov ax, 0x10
+    push eax ; Save the data segment descriptor.
+    mov ax, 0x10 ; Kernel Data segment descriptor.
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
 
-    push esp
-	call isr_handler
+    push esp ; Pass in the stack as a struct pointer.
+	call isr_handler ; Call the handler written in C.
     pop eax
 
+    ; Restore the previous state.
     pop eax
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
     popa
-	add esp, 8
+	add esp, 8 ; Essentially deletes the pushed Error Code and Interrupt Number from the stack.
 
 	sti
-	iret
+	iret ; Pops cs, eip, eflags, ss, and esp.
 
 ; Common IRQ code
 irq_common_stub:
@@ -73,6 +74,7 @@ syscall_common_stub:
 
     push esp
     call syscall_handler
+    mov [syscall_retvalue_tmp], eax ; Save the return value of the Syscall function.
     pop eax
 
     pop eax
@@ -82,9 +84,12 @@ syscall_common_stub:
     mov gs, ax
     popa
     add esp, 8
+    mov eax, [syscall_retvalue_tmp] ; Restore the return value of the Syscall.
 
     sti
     iret
+
+syscall_retvalue_tmp dd 0
 
 global isr0
 global isr1
@@ -140,10 +145,10 @@ global syscall128
 
 ; ISRs
 ; 0: Divide By Zero Exception
-isr0:
+isr0: ; Pushes cs, eip, eflags, ss, and esp.
     cli
-    push byte 0
-    push byte 0
+    push byte 0 ; Null Error Code
+    push byte 0 ; Interrupt Number
     jmp isr_common_stub
 
 ; 1: Debug Exception
@@ -196,7 +201,7 @@ isr7:
     push byte 7
     jmp isr_common_stub
 
-; 8: Double Fault Exception (With Error Code!)
+; 8: Double Fault Exception (Pushes Error Code)
 isr8:
     cli
     push byte 8
@@ -209,31 +214,31 @@ isr9:
     push byte 9
     jmp isr_common_stub
 
-; 10: Bad TSS Exception (With Error Code!)
+; 10: Bad TSS Exception (Pushes Error Code)
 isr10:
     cli
     push byte 10
     jmp isr_common_stub
 
-; 11: Segment Not Present Exception (With Error Code!)
+; 11: Segment Not Present Exception (Pushes Error Code)
 isr11:
     cli
     push byte 11
     jmp isr_common_stub
 
-; 12: Stack Fault Exception (With Error Code!)
+; 12: Stack Fault Exception (Pushes Error Code)
 isr12:
     cli
     push byte 12
     jmp isr_common_stub
 
-; 13: General Protection Fault Exception (With Error Code!)
+; 13: General Protection Fault Exception (Pushes Error Code)
 isr13:
     cli
     push byte 13
     jmp isr_common_stub
 
-; 14: Page Fault Exception (With Error Code!)
+; 14: Page Fault Exception (Pushes Error Code)
 isr14:
     cli
     push byte 14

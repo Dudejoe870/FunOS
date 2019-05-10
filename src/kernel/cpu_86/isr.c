@@ -10,7 +10,7 @@
 isr_t interrupt_handlers[256];
 
 #define SYSCALL_NUM 256
-isr_t syscalls[SYSCALL_NUM];
+syscall_t syscalls[SYSCALL_NUM];
 
 void isr_install()
 {
@@ -121,9 +121,9 @@ const char* exception_messages[] =
     "Reserved"
 };
 
-void syscall_handler(interrupt_info_t* info)
+uint32_t syscall_handler(interrupt_info_t* info)
 {
-    isr_t syscall_handler = syscalls[info->eax];
+    syscall_t syscall_handler = syscalls[info->eax];
     if (info->eax > SYSCALL_NUM || !syscall_handler)
     {
         terminal_color = vga_color(VGA_COLOR_RED, VGA_COLOR_BLACK);
@@ -135,7 +135,7 @@ void syscall_handler(interrupt_info_t* info)
         }
     }
     
-    syscall_handler(info);
+    return syscall_handler(info);
 }
 
 void isr_handler(interrupt_info_t* info)
@@ -175,7 +175,7 @@ void register_interrupt_handler(uint8_t n, isr_t handler)
     interrupt_handlers[n] = handler;
 }
 
-void register_syscall_handler(uint8_t n, isr_t handler)
+void register_syscall_handler(uint8_t n, syscall_t handler)
 {
     syscalls[n] = handler;
 }

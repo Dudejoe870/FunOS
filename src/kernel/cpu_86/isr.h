@@ -83,10 +83,11 @@ typedef struct
 
 void isr_install(void);
 
-void syscall_handler(interrupt_info_t* info);
+uint32_t syscall_handler(interrupt_info_t* info);
 void isr_handler(interrupt_info_t* info);
 void irq_handler(interrupt_info_t* info);
 
 typedef void (*isr_t)(interrupt_info_t*);
+typedef uint32_t (*syscall_t)(interrupt_info_t*);
 void register_interrupt_handler(uint8_t n, isr_t handler);
-void register_syscall_handler(uint8_t n, isr_t handler);
+void register_syscall_handler(uint8_t n, syscall_t handler);

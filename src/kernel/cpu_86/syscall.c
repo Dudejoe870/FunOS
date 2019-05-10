@@ -9,8 +9,9 @@ void init_syscalls()
 
 // Callbacks
 // TTY:
-void terminal_clear_syscall(interrupt_info_t* info)
+uint32_t terminal_clear_syscall(interrupt_info_t* info)
 {
     terminal_clear();
     terminal_setcurrentpos(0, 0);
+    return 0;
 }
