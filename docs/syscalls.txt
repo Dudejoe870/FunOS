@@ -1,3 +1,4 @@
 TTY Driver Syscalls:
     terminal_clear: EAX: 0x00
-        Desc: Clears the terminal
+        Return Type: uint32_t
+        Desc: Clears the terminal, always returns 0.
